@@ -1,1 +1,3 @@
-Repository létrehozása
+#Dokumnetáció
+##Repository létrehozása
+##Feladatok ütemezése/kiosztása
