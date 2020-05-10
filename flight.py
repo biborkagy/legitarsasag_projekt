@@ -43,63 +43,67 @@ csv2sql()
 # legitarsasagok.txt 
 c.execute('SELECT légitársaság_neve FROM tb GROUP BY légitársaság_neve')
 légitársaságok = c.fetchall()
-with open('legitarsasagok.txt','w') as f:
+with open('legitarsasagok_listaja.txt','w') as f:
     [ print(sor[0], file=f ) for sor in légitársaságok ]
 
-
-f = open('legitarsasagok_statisztika.txt', 'w')
-print('*****************************************************************************')
-for légitársaság in légitársaságok:
-    print(légitársaság[0],':-----------------------------------------------------------')
-    print(légitársaság[0],':-----------------------------------------------------------', file=f)
-    c.execute( 'SELECT  SUM(érkező_járatok_száma)  FROM tb  WHERE légitársaság_neve LIKE ?', (légitársaság[0],))
+átlagos_késések = []
+f = open('legitarsasag.txt', 'w')
+txt ='****************************  Légitársaság ***************************************\n'
+for társaság in légitársaságok:
+    légitársaság = társaság[0]
+    c.execute( 'SELECT  SUM(érkező_járatok_száma)  FROM tb  WHERE légitársaság_neve LIKE ?', (légitársaság,))
     összes_járat_száma = int( c.fetchall()[0][0] )
-    print(f'               Az összes járat:             {összes_járat_száma}')
-    print(f'               Az összes járat:             {összes_járat_száma}', file=f)
-    
-    c.execute( 'SELECT  reptér_kódja FROM tb WHERE légitársaság_neve LIKE ?  GROUP BY reptér_kódja', (légitársaság[0],))
+    txt += f'{légitársaság}                                                             \n'
+    txt += f'               Az összes járat:             {összes_járat_száma}            \n'
+  
+    c.execute( 'SELECT  reptér_kódja FROM tb WHERE légitársaság_neve LIKE ?  GROUP BY reptér_kódja', (légitársaság,))
     repterek = c.fetchall()
-    print(f'               A látogatott repterek száma: { len(repterek) }')
-    print(f'               A látogatott repterek száma: { len(repterek) }', file=f)
+    txt += f'               A látogatott repterek száma: { len(repterek)}                \n'
     
-    c.execute( 'SELECT SUM(törölt_járatok_száma) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
+    c.execute( 'SELECT SUM(törölt_járatok_száma) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság,))
     törölt_járatok_száma = int( c.fetchall()[0][0] )
     arány =  törölt_járatok_száma / összes_járat_száma
-    print(f'               A törölt járatok aránya:     {arány*100:.2f}%')
-    print(f'               A törölt járatok aránya:     {arány*100:.2f}%', file=f)
+    txt += f'               A törölt járatok aránya:     {arány*100:.2f}%                 \n'
     
-    c.execute( 'SELECT SUM(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
+    c.execute( 'SELECT SUM(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság,))
     átlagos_járat_késés = int( c.fetchall()[0][0] )/összes_járat_száma
-    print(f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc')          #késések_összesítve_percben
-    print(f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc', file=f)  #késések_összesítve_percben
+    txt += f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc    \n' 
+    átlagos_késések.append( (átlagos_járat_késés, légitársaság))
  
-    c.execute( 'SELECT SUM(érkező_járatok_száma),reptér_kódja  FROM tb WHERE légitársaság_neve LIKE ? GROUP BY reptér_kódja', (légitársaság[0],))
+    c.execute( 'SELECT SUM(érkező_járatok_száma),reptér_kódja  FROM tb WHERE légitársaság_neve LIKE ? GROUP BY reptér_kódja', (légitársaság,))
     reptér_forgalom, reptér_kód = max( c.fetchall() )
-    print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}')
-    print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}', file=f)
+    txt += f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}  \n'
+    txt += f'------------------------------------------------------------------------------\n'
+    print( txt         )
+    print( txt, file=f )
 f.close()
-
-
 
 
 # 3 Legforgalmasabb Reptér 
 c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve, reptér_kódja  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
 repterek_forgalma = c.fetchall()
 
-with open('legforgalmasabb_repuloterek.txt','w') as f:
-    p        =  '\n\n'
-    p       += f'************* 3 Legforgalmasabb Reptér ****************\n\n' 
+with open('repterek.txt','w') as f:
+    txt        =  '\n\n'
+    txt       += f'************* Repterek: 3 Legforgalmasabb Reptér ****************\n\n' 
     for i in range(3):
-        p   += f'{i+1}. reptér: {repterek_forgalma[i][1] }                \n'
-        p   += f'           Az összes járat: {repterek_forgalma[i][0]}    \n'
-        p   += f'           Kód:             {repterek_forgalma[i][2]}    \n'
-        p   += f'                                                         \n'
-        for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
-            p   += f'           koordináta: {x}                             \n\n'  
-    print( p        )
-    print( p, file=f)
+        txt += f'{i+1}. reptér: {repterek_forgalma[i][1] }                          \n'
+        txt += f'           Az összes járat: {repterek_forgalma[i][0]}              \n'
+        txt += f'           Kód:             {repterek_forgalma[i][2]}              \n'
+        x = search( query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ), tld='co.in', lang='en', num=2, stop=1, pause=2)
+        txt += f'   koordináta:                                                     \n'
+        txt += f'                {list(x).pop()}                                 \n\n' 
+    print( txt         )
+    print( txt, file=f )
     
-c.execute( 'SELECT AVG(késések_összesítve_percben), légitársaság_neve FROM tb  GROUP BY légitársaság_neve')
-átlagos_járat_késés =  c.fetchall() 
-#print(f'               Az átlagos járat késés:      {átlagos_járat_késés}')          #késések_összesítve_percben
-#print(f'               Az átlagos járat késés:      {átlagos_járat_késés}', file=f)  #késések_összesítve_percben   
+with open('kesesek.txt','w') as f:
+    txt        = f'\n\n'
+    txt       += f'************* Késések:  3 legkisebb átlagos késés ***************\n\n' 
+    for i in range(3):
+        txt   += f'{i+1}. társaság:  { átlagos_késések[i][1] }                        \n'
+        txt   += f'           Átlagos késés: { átlagos_késések[i][0]:.1f} perc        \n'
+        txt   += f' ------------------------------------------------------------------\n'
+    print( txt         )
+    print( txt, file=f )
+
+
