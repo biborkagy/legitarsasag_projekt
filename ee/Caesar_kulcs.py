@@ -30,7 +30,8 @@ for i in range(n-1):
                 lista.append( int(txt[j]) )
             else:
                 break
-res2 = int( sum(lista) / len(lista) ) 
+res2 = int( sum(lista) / len(lista) )
+res_round = round( sum(lista) / len(lista) ) 
 print( res2 )
 
 # 3.Számoljuk össze hányszor szerepel a szövegben az X, Y és W karakter.
