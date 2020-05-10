@@ -1,69 +1,75 @@
-# pip3 install beautifulsoup4
-# pip3 install google
-
-def légitársaságok_nevei():
-    from googlesearch import search
-
-    with open('flights.csv') as f:
-        fejléc =  f.readline()
-        lista  =  [ sor.strip().split(',') for sor in f]
-    
-    légitársaságok   = sorted(list( { sor[3] for sor in lista } ))
-
-    for  légitársaság in légitársaságok:
-        for j in search(légitársaság, num=1, stop=1, pause=3 ):
-            print(légitársaság, j) 
-    print('------------------------------')
-#-------------------------------------------------------------------------------------------------------------------------------------------
-#fejléc
-#'"year"," month","carrier","carrier_name","airport","airport_name","arr_flights","arr_del15","carrier_ct"," weather_ct","nas_ct","security_ct","late_aircraft_ct","arr_cancelled","arr_diverted"," arr_delay"," carrier_delay","weather_delay","nas_delay","security_delay","late_aircraft_delay",\n'
-
 import sqlite3
+import pprint
 conn = sqlite3.Connection('flights.db')
-c = conn.cursor()
-
-'''
-carrier: A légitársaság kódja
-carrier_name: A légitársaság neve
-airport: A reptér kódja
-airport_name: A reptér neve
-arr_flights: Az érkező járatok száma
-arr_del15: A késett járatok száma
-arr_delay: A késések összesítve percben
-
-'"year", " month", "carrier," "carrier_name", "airport",
-"airport_name", "arr_flights", "arr_del15", "carrier_ct", " weather_ct",
-"nas_ct", "security_ct", "late_aircraft_ct", "arr_cancelled" "arr_diverted",
-" arr_delay"," carrier_delay","weather_delay","nas_delay", "security_delay",
-"late_aircraft_delay",'
-'''
-
+c    = conn.cursor()
+c.execute('DROP TABLE IF EXISTS tb')
 c.execute('''
     CREATE TABLE IF NOT EXISTS tb 
       (
-    carrier       TEXT,
-    carrier_name  TEXT,
-    airport       TEXT,
-    airport_name  TEXT,
-    arr_flights   INTEGER,
-    arr_del15     INTEGER,
-    arr_delay     INTEGER
+    légitársaság_kódja         TEXT,    -- carrier
+    légitársaság_neve          TEXT,    -- carrier_name
+    reptér_kódja               TEXT,    -- airport
+    reptér_neve                TEXT,    -- airport_name
+    érkező_járatok_száma       INTEGER, -- arr_flights
+    késett_járatok_száma       INTEGER, -- arr_del15
+    késések_összesítve_percben INTEGER, -- arr_delay
+    törölt_járatok_száma       INTEGER  -- arr_cancelled
       )
 ''')
 conn.commit()
 
-def db_feltöltés():
-    with open('flights.csv') as f:
-        fejléc =  f.readline()
+def csv2sql():
+    with open('flights_2.csv') as f:
+        fejléc =  f.readline().strip().split(';')
+        m = { mező_név.lstrip() : i for i, mező_név in enumerate(fejléc) }
         for sor in f:
-            s = sor.strip().split(',')
-            carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, arr_delay = s[2], s[3], s[4], s[5], s[6], s[7], s[15]
-            c.execute(" INSERT INTO tb VALUES (?,?,?,?,?,?,?) ", ( carrier, carrier_name, airport, airport_name, arr_flights, arr_del15, arr_delay )  ) 
-    conn.commit()
-    
-# Légitársaságok:
-c.execute('SELECT carrier_name FROM tb GROUP BY carrier_name')
+            s = sor.strip().split(';')
+            c.execute( "INSERT INTO tb VALUES (?,?,?,?,?,?,?,?) ",
+                        ( s[ m['carrier'         ] ], # légitársaság_kódja
+                          s[ m['carrier_name'    ] ], # légitársaság_neve,
+                          s[ m['airport'         ] ], # reptér_kódja,
+                          s[ m['airport_name'    ] ], # reptér_neve,
+                          s[ m['arr_flights'     ] ], # érkező_járatok_száma,
+                          s[ m['arr_del15'       ] ], # késett_járatok_száma,
+                          s[ m['arr_delay'       ] ], # késések_összesítve_percben)
+                          s[ m['arr_cancelled'   ] ]  # törölt_járatok_száma
+                        )
+                      )
+    conn.commit()    
+csv2sql()
+
+# légitársaságok.txt 
+c.execute('SELECT légitársaság_neve FROM tb GROUP BY légitársaság_neve')
 légitársaságok = c.fetchall()
+with open('légitársaságok.txt','w') as f:
+    [ print(sor[0], file=f ) for sor in légitársaságok ]
+
+# legforgalmasabb_repülőterek.txt
+c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
+repterek_forgalma = c.fetchall()
+with open('legforgalmasabb_repülőterek.txt','w') as f:
+    [ print( repterek_forgalma[i][0], repterek_forgalma[i][1], file=f ) for i in range(3) ]
 
 
+f = open('légitársaságok_statisztikái.txt', 'w')
+print('*****************************************************************************')
+for légitársaság in légitársaságok:
+    print(légitársaság[0],':-----------------------------------------------------------')
+    print(légitársaság[0],':-----------------------------------------------------------', file=f)
+    c.execute( 'SELECT  SUM(érkező_járatok_száma)  FROM tb  WHERE légitársaság_neve LIKE ?', (légitársaság[0],))
+    összes_járat_száma = int( c.fetchall()[0][0] )
+    print(f'               Az összes járat:             {összes_járat_száma}')
+    print(f'               Az összes járat:             {összes_járat_száma}', file=f)
+    
+    c.execute( 'SELECT  reptér_kódja FROM tb WHERE légitársaság_neve LIKE ?  GROUP BY reptér_kódja', (légitársaság[0],))
+    repterek = c.fetchall()
+    print(f'               A látogatott repterek száma: { len(repterek) }')
+    print(f'               A látogatott repterek száma: { len(repterek) }', file=f)
+    
+    c.execute( 'SELECT SUM(törölt_járatok_száma) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
+    törölt_járatok_száma = int( c.fetchall()[0][0] )
+    arány =  törölt_járatok_száma / összes_járat_száma
+    print(f'               A törölt járatok aránya:     {arány*100:.2f}%')
+    print(f'               A törölt járatok aránya:     {arány*100:.2f}%', file=f)
 
+f.close()
