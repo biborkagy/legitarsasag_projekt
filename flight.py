@@ -70,5 +70,16 @@ for légitársaság in légitársaságok:
     arány =  törölt_járatok_száma / összes_járat_száma
     print(f'               A törölt járatok aránya:     {arány*100:.2f}%')
     print(f'               A törölt járatok aránya:     {arány*100:.2f}%', file=f)
+    
+    c.execute( 'SELECT AVG(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
+    átlagos_járat_késés = int( c.fetchall()[0][0] )
+    print(f'               Az átlagos járat késés:      {átlagos_járat_késés}')          #késések_összesítve_percben
+    print(f'               Az átlagos járat késés:      {átlagos_járat_késés}', file=f)  #késések_összesítve_percben
+ 
+    c.execute( 'SELECT SUM(érkező_járatok_száma),reptér_kódja  FROM tb WHERE légitársaság_neve LIKE ? GROUP BY reptér_kódja', (légitársaság[0],))
+    reptér_forgalom, reptér_kód = max( c.fetchall() )
+    print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}')
+    print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}', file=f)
+
 
 f.close()
