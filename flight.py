@@ -33,7 +33,7 @@ def csv2sql():
                           s[ m['airport_name'    ] ], # reptér_neve,
                           s[ m['arr_flights'     ] ], # érkező_járatok_száma,
                           s[ m['arr_del15'       ] ], # késett_járatok_száma,
-                          s[ m['arr_delay'       ] ], # késések_összesítve_percben)
+                          s[ m['arr_delay'       ] ], # késések_összesítve_percben
                           s[ m['arr_cancelled'   ] ]  # törölt_járatok_száma
                         )
                       )
@@ -68,16 +68,18 @@ for légitársaság in légitársaságok:
     print(f'               A törölt járatok aránya:     {arány*100:.2f}%')
     print(f'               A törölt járatok aránya:     {arány*100:.2f}%', file=f)
     
-    c.execute( 'SELECT AVG(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
-    átlagos_járat_késés = int( c.fetchall()[0][0] )
-    print(f'               Az átlagos járat késés:      {átlagos_járat_késés}')          #késések_összesítve_percben
-    print(f'               Az átlagos járat késés:      {átlagos_járat_késés}', file=f)  #késések_összesítve_percben
+    c.execute( 'SELECT SUM(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság[0],))
+    átlagos_járat_késés = int( c.fetchall()[0][0] )/összes_járat_száma
+    print(f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc')          #késések_összesítve_percben
+    print(f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc', file=f)  #késések_összesítve_percben
  
     c.execute( 'SELECT SUM(érkező_járatok_száma),reptér_kódja  FROM tb WHERE légitársaság_neve LIKE ? GROUP BY reptér_kódja', (légitársaság[0],))
     reptér_forgalom, reptér_kód = max( c.fetchall() )
     print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}')
     print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}', file=f)
 f.close()
+
+
 
 
 # 3 Legforgalmasabb Reptér 
@@ -92,7 +94,12 @@ with open('legforgalmasabb_repuloterek.txt','w') as f:
         p   += f'           Az összes járat: {repterek_forgalma[i][0]}    \n'
         p   += f'           Kód:             {repterek_forgalma[i][2]}    \n'
         p   += f'                                                         \n'
-        for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
-            p   += f'           koordináta: {x}                             \n\n'  
+       # for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
+       #     p   += f'           koordináta: {x}                             \n\n'  
     print( p        )
-    print( p, file=f)
+    #print( p, file=f)
+    
+c.execute( 'SELECT AVG(késések_összesítve_percben), légitársaság_neve FROM tb  GROUP BY légitársaság_neve')
+átlagos_járat_késés =  c.fetchall() 
+#print(f'               Az átlagos járat késés:      {átlagos_járat_késés}')          #késések_összesítve_percben
+#print(f'               Az átlagos járat késés:      {átlagos_járat_késés}', file=f)  #késések_összesítve_percben   
