@@ -41,15 +41,14 @@ csv2sql()
 # légitársaságok.txt 
 c.execute('SELECT légitársaság_neve FROM tb GROUP BY légitársaság_neve')
 légitársaságok = c.fetchall()
-with open('légitársaságok.txt','w') as f:
+with open('legitarsasagok.txt','w') as f:
     [ print(sor[0], file=f ) for sor in légitársaságok ]
 
 # legforgalmasabb_repülőterek.txt
 c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
 repterek_forgalma = c.fetchall()
-with open('legforgalmasabb_repülőterek.txt','w') as f:
+with open('legforgalmasabb_repuloterek.txt','w') as f:
     [ print( repterek_forgalma[i][0], repterek_forgalma[i][1], file=f ) for i in range(3) ]
-
 
 f = open('legitarsasagok_statisztika.txt', 'w')
 print('*****************************************************************************')
