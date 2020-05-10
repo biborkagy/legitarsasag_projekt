@@ -74,8 +74,8 @@ for társaság in légitársaságok:
     reptér_forgalom, reptér_kód = max( c.fetchall() )
     txt += f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}  \n'
     txt += f'------------------------------------------------------------------------------\n'
-    print( txt         )
-    print( txt, file=f )
+print( txt         )
+print( txt, file=f )
 f.close()
 
 
