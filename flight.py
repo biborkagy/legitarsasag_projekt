@@ -94,10 +94,10 @@ with open('legforgalmasabb_repuloterek.txt','w') as f:
         p   += f'           Az összes járat: {repterek_forgalma[i][0]}    \n'
         p   += f'           Kód:             {repterek_forgalma[i][2]}    \n'
         p   += f'                                                         \n'
-       # for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
-       #     p   += f'           koordináta: {x}                             \n\n'  
+        for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
+            p   += f'           koordináta: {x}                             \n\n'  
     print( p        )
-    #print( p, file=f)
+    print( p, file=f)
     
 c.execute( 'SELECT AVG(késések_összesítve_percben), légitársaság_neve FROM tb  GROUP BY légitársaság_neve')
 átlagos_járat_késés =  c.fetchall() 
