@@ -1,5 +1,7 @@
+from googlesearch import search
 import sqlite3
 import pprint
+
 conn = sqlite3.Connection('flights.db')
 c    = conn.cursor()
 c.execute('DROP TABLE IF EXISTS tb')
@@ -38,17 +40,12 @@ def csv2sql():
     conn.commit()    
 csv2sql()
 
-# légitársaságok.txt 
+# legitarsasagok.txt 
 c.execute('SELECT légitársaság_neve FROM tb GROUP BY légitársaság_neve')
 légitársaságok = c.fetchall()
 with open('legitarsasagok.txt','w') as f:
     [ print(sor[0], file=f ) for sor in légitársaságok ]
 
-# legforgalmasabb_repülőterek.txt
-c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
-repterek_forgalma = c.fetchall()
-with open('legforgalmasabb_repuloterek.txt','w') as f:
-    [ print( repterek_forgalma[i][0], repterek_forgalma[i][1], file=f ) for i in range(3) ]
 
 f = open('legitarsasagok_statisztika.txt', 'w')
 print('*****************************************************************************')
@@ -80,6 +77,22 @@ for légitársaság in légitársaságok:
     reptér_forgalom, reptér_kód = max( c.fetchall() )
     print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}')
     print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}', file=f)
-
-
 f.close()
+
+
+# 3 Legforgalmasabb Reptér 
+c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve, reptér_kódja  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
+repterek_forgalma = c.fetchall()
+
+with open('legforgalmasabb_repuloterek.txt','w') as f:
+    p        =  '\n\n'
+    p       += f'************* 3 Legforgalmasabb Reptér ****************\n\n' 
+    for i in range(3):
+        p   += f'{i+1}. reptér: {repterek_forgalma[i][1] }                \n'
+        p   += f'           Az összes járat: {repterek_forgalma[i][0]}    \n'
+        p   += f'           Kód:             {repterek_forgalma[i][2]}    \n'
+        p   += f'                                                         \n'
+        for x in search(query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ),tld='co.in',lang='en',num=2,stop=1,pause=2):
+            p   += f'           koordináta: {x}                             \n\n'  
+    print( p        )
+    print( p, file=f)
