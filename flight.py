@@ -51,7 +51,7 @@ with open('legforgalmasabb_repülőterek.txt','w') as f:
     [ print( repterek_forgalma[i][0], repterek_forgalma[i][1], file=f ) for i in range(3) ]
 
 
-f = open('légitársaságok_statisztikái.txt', 'w')
+f = open('legitarsasagok_statisztika.txt', 'w')
 print('*****************************************************************************')
 for légitársaság in légitársaságok:
     print(légitársaság[0],':-----------------------------------------------------------')
