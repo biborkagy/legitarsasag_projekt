@@ -84,25 +84,25 @@ c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve, reptér_kódja  
 repterek_forgalma = c.fetchall()
 
 with open('repterek.txt','w') as f:
-    txt        =  '\n\n'
-    txt       += f'************* Repterek: 3 Legforgalmasabb Reptér ****************\n\n' 
+    txt      = f'                                                                 \n\n'
+    txt     += f'************* Repterek: 3 Legforgalmasabb Reptér ****************\n\n' 
     for i in range(3):
         txt += f'{i+1}. reptér: {repterek_forgalma[i][1] }                          \n'
         txt += f'           Az összes járat: {repterek_forgalma[i][0]}              \n'
         txt += f'           Kód:             {repterek_forgalma[i][2]}              \n'
         x = search( query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ), tld='co.in', lang='en', num=2, stop=1, pause=2)
         txt += f'   koordináta:                                                     \n'
-        txt += f'                {list(x).pop()}                                 \n\n' 
+        txt += f'                {list(x).pop()}                                  \n\n' 
     print( txt         )
     print( txt, file=f )
     
 with open('kesesek.txt','w') as f:
-    txt        = f'\n\n'
-    txt       += f'************* Késések:  3 legkisebb átlagos késés ***************\n\n' 
+    txt      = f'                                                                 \n\n'
+    txt     += f'************* Késések:  3 legkisebb átlagos késés ***************\n\n' 
     for i in range(3):
-        txt   += f'{i+1}. társaság:  { átlagos_késések[i][1] }                        \n'
-        txt   += f'           Átlagos késés: { átlagos_késések[i][0]:.1f} perc        \n'
-        txt   += f' ------------------------------------------------------------------\n'
+        txt += f'{i+1}. társaság:  { átlagos_késések[i][1] }                        \n'
+        txt += f'           Átlagos késés: { átlagos_késések[i][0]:.1f} perc        \n'
+        txt += f' ------------------------------------------------------------------\n'
     print( txt         )
     print( txt, file=f )
 
