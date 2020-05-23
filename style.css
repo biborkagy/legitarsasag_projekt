@@ -1,6 +1,5 @@
 body {
     font-family: Arial;
-
 }
 
 #fejlec {
@@ -13,7 +12,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 #tartalom {
@@ -37,24 +35,20 @@ body {
 }
 
 #tarsasagok {
-    
     margin: 20px 20px 20px 0px;
 }
 
 #repterek {
-    
     margin: 20px 20px 20px 20px;
 }
 
 #kesesek {
-    
     margin: 20px 0px 20px 20px;
 }
 
 .szoveg {
     font-size: large;
     font-weight: bold;
-
 }
 
 .vers {
@@ -93,3 +87,47 @@ a:hover {
 a:active{
     color: #3cb878;
 }
+
+.keses{
+    width: 200px;
+    margin: 10px 10px 10px 10px;
+    font-size: small;
+    border-style: solid;
+    border-color: #000000;
+    float: left;
+}
+
+    #terkoz1 {
+        margin: 20px 60px 20px 20px;
+    }
+    
+    #terkoz2 {
+        margin: 20px 20px 20px 20px;
+    }
+    
+    #terkoz3 {
+        margin: 20px 0px 20px 60px;
+    }
+
+    .repter{
+        width: 200px;
+        height: 200px;
+        margin: 10px 10px 10px 10px;
+        font-size: small;
+        border-style: solid;
+        border-color: #000000;
+        float: left;
+    }
+    
+        #terkoz1 {
+            margin: 20px 60px 20px 20px;
+        }
+        
+        #terkoz2 {
+            margin: 20px 20px 20px 20px;
+        }
+        
+        #terkoz3 {
+            margin: 20px 0px 20px 60px;
+        }
+    
