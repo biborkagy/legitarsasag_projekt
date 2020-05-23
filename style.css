@@ -1,0 +1,75 @@
+body {
+    font-family: Arial;
+
+}
+
+#fejlec {
+    width: 100%;
+    height: 30px;
+    border-style: solid;
+    border-color: #333333;
+    background-color: #cdcdcd;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#tartalom {
+    width: 800px;
+    margin: auto auto;
+    
+}
+
+.repulo {
+   width: 240px; 
+   height: 180px;
+   border-radius: 5px 5px;
+   background-color: #3cb878;
+   text-align: center;
+   color: #cccccc;
+   font-size: x-large;
+   font-weight: bold;
+   float: left;
+}
+
+#tarsasagok {
+    
+    margin: 20px 20px 20px 0px;
+}
+
+#repterek {
+    
+    margin: 20px 20px 20px 20px;
+}
+
+#kesesek {
+    
+    margin: 20px 0px 20px 20px;
+}
+
+.vers {
+    width: 350px;
+    margin: auto auto;
+    font-size: small;
+}
+
+#versfej {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+}
+
+a:link {
+    color: #3cb878;
+}
+a:visited {
+    color: #3cb878;
+}
+a:hover {
+    color: #3cb878;
+}
+a:active{
+    color: #3cb878;
+}
