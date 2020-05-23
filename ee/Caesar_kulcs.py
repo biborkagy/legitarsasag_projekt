@@ -5,11 +5,11 @@
 Fibonacci 50
 Az ötvenedik fibonacci szám legmagasabb helyiértékű számjegye kivonva a legkisebb helyiértéküből. Ha a nulladik: 0, az első: 1.
 '''
-lista =  [0,1]
-n = 49
+fibonacci =  [0,1]
+n = 50
 for i in range(n):
-    lista.append( lista[i] + lista[i+1])
-s = str(lista[49])
+    fibonacci.append( fibonacci[i] + fibonacci[i+1])
+s = str(fibonacci[50])
 res1 = int( s[-1] ) - int( s[0] )
 print(res1)
 

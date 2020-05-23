@@ -19,13 +19,15 @@ body {
 #tartalom {
     width: 800px;
     margin: auto auto;
-    
+    margin-bottom: 50px;
 }
 
 .repulo {
-   width: 240px; 
+   width: 235px; 
    height: 180px;
-   border-radius: 5px 5px;
+   border-style: solid;
+   border-color: #333333;
+   border-radius: 10px 10px;
    background-color: #3cb878;
    text-align: center;
    color: #cccccc;
@@ -56,6 +58,12 @@ body {
      margin: 20px 50px 20px 20px;
    }
 
+.szoveg {
+    font-size: large;
+    font-weight: bold;
+
+}
+
 .vers {
     width: 350px;
     margin: auto auto;
@@ -66,6 +74,18 @@ body {
     text-align: center;
     font-weight: bold;
     font-size: large;
+}
+
+.keszitok {
+    width: 190px;
+    float: left;
+    text-align: center;
+    border-right: solid;
+    font-size: small;
+}
+
+#last {
+    border-right: none;
 }
 
 a:link {
