@@ -43,11 +43,18 @@ body {
     
     margin: 20px 20px 20px 20px;
 }
-
-#kesesek {
-    
-    margin: 20px 0px 20px 20px;
+.keses{
+    width: 200x;
+    margin: 10px 10px 10px 10px;
+    font-size: small;
+    border-style: solid;
+    border-color: #000000;
+    float: left;
 }
+#kesesek {
+    justify-content: center;
+     margin: 20px 50px 20px 20px;
+   }
 
 .vers {
     width: 350px;
