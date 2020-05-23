@@ -83,18 +83,18 @@ f.close()
 c.execute( 'SELECT SUM(érkező_járatok_száma), reptér_neve, reptér_kódja  FROM tb  GROUP BY reptér_neve ORDER By SUM(érkező_járatok_száma) DESC')
 repterek_forgalma = c.fetchall()
 
-with open('repterek.txt','w') as f:
-    txt      = f'                                                                 \n\n'
-    txt     += f'************* Repterek: 3 Legforgalmasabb Reptér ****************\n\n' 
-    for i in range(3):
-        txt += f'{i+1}. reptér: {repterek_forgalma[i][1] }                          \n'
-        txt += f'           Az összes járat: {repterek_forgalma[i][0]}              \n'
-        txt += f'           Kód:             {repterek_forgalma[i][2]}              \n'
-        x = search( query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ), tld='co.in', lang='en', num=2, stop=1, pause=2)
-        txt += f'   koordináta:                                                     \n'
-        txt += f'                {list(x).pop()}                                  \n\n' 
-    print( txt         )
-    print( txt, file=f )
+# with open('repterek.txt','w') as f:
+#     txt      = f'                                                                 \n\n'
+#     txt     += f'************* Repterek: 3 Legforgalmasabb Reptér ****************\n\n' 
+#     for i in range(3):
+#         txt += f'{i+1}. reptér: {repterek_forgalma[i][1] }                          \n'
+#         txt += f'           Az összes járat: {repterek_forgalma[i][0]}              \n'
+#         txt += f'           Kód:             {repterek_forgalma[i][2]}              \n'
+#         x = search( query=(repterek_forgalma[i][2]+ 'Airport coordinate latlong.net' ), tld='co.in', lang='en', num=2, stop=1, pause=2)
+#         txt += f'   koordináta:                                                     \n'
+#         txt += f'                {list(x).pop()}                                  \n\n' 
+#     print( txt         )
+#     print( txt, file=f )
     
 with open('kesesek.txt','w') as f:
     txt      = f'                                                                 \n\n'
@@ -106,4 +106,36 @@ with open('kesesek.txt','w') as f:
     print( txt         )
     print( txt, file=f )
 
+légitársaságok_= [ sor[0].replace(' ','_') for sor in légitársaságok]
 
+légitársaságok_szöveg_blokk = ''
+for i in range(len(légitársaságok_)):
+    légitársaságok_szöveg_blokk += f'''             <li><a href="{légitársaságok_[i]}.html">{légitársaságok[i][0]}</a></li>\n'''
+
+
+
+légitársaságok_listája_html = '''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Légitársaságok Listája</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+    <div id="fejlec">
+        Légitársaságok Listája
+    </div>
+
+    <div id="tartalom">
+        <a href="index.html">Főoldal</a> > <a href="legitarsasagok_listaja.html">Légitársaságok Listája</a>
+        <ul>
+''' + légitársaságok_szöveg_blokk + '''
+        </ul>
+    </div>
+</body>
+</html>
+'''
+with open('legitarsasagok_listaja.html','w') as f:
+    f.write(légitársaságok_listája_html)
