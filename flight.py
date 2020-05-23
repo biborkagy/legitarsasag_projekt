@@ -139,3 +139,5 @@ légitársaságok_listája_html = '''
 '''
 with open('legitarsasagok_listaja.html','w') as f:
     f.write(légitársaságok_listája_html)
+    
+    
