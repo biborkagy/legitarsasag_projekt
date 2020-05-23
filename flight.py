@@ -139,5 +139,71 @@ légitársaságok_listája_html = '''
 '''
 with open('legitarsasagok_listaja.html','w') as f:
     f.write(légitársaságok_listája_html)
+
+#******************************************************************************************************
+#******************************************************************************************************
     
+átlagos_késések = []
+
+txt =''
+for társaság in légitársaságok:
+    légitársaság = társaság[0]
+    c.execute( 'SELECT  SUM(érkező_járatok_száma)  FROM tb  WHERE légitársaság_neve LIKE ?', (légitársaság,))
+    összes_járat_száma = int( c.fetchall()[0][0] )
+    print(f'{légitársaság}')
+    print(f'   Az összes járat:    {összes_járat_száma} ')
+  
+    c.execute( 'SELECT  reptér_kódja FROM tb WHERE légitársaság_neve LIKE ?  GROUP BY reptér_kódja', (légitársaság,))
+    repterek = c.fetchall()
+    print(f'               A látogatott repterek száma: { len(repterek)} ')
     
+    c.execute( 'SELECT SUM(törölt_járatok_száma) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság,))
+    törölt_járatok_száma = int( c.fetchall()[0][0] )
+    arány =  törölt_járatok_száma / összes_járat_száma
+    print(f'               A törölt járatok aránya:     {arány*100:.2f}%               ')
+    
+    c.execute( 'SELECT SUM(késések_összesítve_percben) FROM tb WHERE légitársaság_neve LIKE ? ', (légitársaság,))
+    átlagos_járat_késés = int( c.fetchall()[0][0] )/összes_járat_száma
+    print(f'               Az átlagos járat késés:      {átlagos_járat_késés:.1f} perc    ') 
+    átlagos_késések.append( (átlagos_járat_késés, légitársaság))
+ 
+    c.execute( 'SELECT SUM(érkező_járatok_száma),reptér_kódja  FROM tb WHERE légitársaság_neve LIKE ? GROUP BY reptér_kódja', (légitársaság,))
+    reptér_forgalom, reptér_kód = max( c.fetchall() )
+    print(f'               A legforgalmasabb reptér:    {reptér_kód}   {reptér_forgalom}  ')
+    
+    társaság_html=f'''
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Légitársaságok</title>
+    <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+    <div id="fejlec">
+        Légitársaságok
+    </div>
+
+    <div id="tartalom">
+        <a href="index.html">Főoldal</a> > <a href="legitarsasagok_listaja.html">Légitársaságok Listája</a> > <a href="{légitársaság.replace(' ','_')}.html">{légitársaság}</a><br><br>
+        <table>
+            <tr>
+                <td> <a href="{légitársaság.replace(' ','_')}.png"><img src="logo/{légitársaság.replace(' ','_')}.png"></a></td>
+                <td><strong>Az összes járat:</strong><br>{összes_járat_száma}<br>
+                    <strong>A látogatott repterek száma:</strong><br>{ len(repterek)}<br>
+                    <strong>A törölt járatok aránya:</strong><br>{arány*100:.2f}<br>
+                    <strong>Az átlagos járat késés:</strong><br>{átlagos_járat_késés:.1f}<br>
+                    <strong>A legforgalmasabb reptér:</strong><br>{reptér_kód}<br>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>   
+'''
+    file_név = f"{légitársaság.replace(' ','_')}.html"
+    with open(file_név,'w') as f:
+        f.write(társaság_html)
+
+
