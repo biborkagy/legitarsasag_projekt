@@ -189,7 +189,7 @@ for társaság in légitársaságok:
         <a href="index.html">Főoldal</a> > <a href="legitarsasagok_listaja.html">Légitársaságok Listája</a> > <a href="{légitársaság.replace(' ','_')}.html">{légitársaság}</a><br><br>
         <table>
             <tr>
-                <td> <a href="{légitársaság.replace(' ','_')}.png"><img src="logo/{légitársaság.replace(' ','_')}.png"></a></td>
+                <td> <a href="logo/{légitársaság.replace(' ','_')}.png"><img src="logo/{légitársaság.replace(' ','_')}.png"></a></td>
                 <td><strong>Az összes járat:</strong><br>{összes_járat_száma}<br>
                     <strong>A látogatott repterek száma:</strong><br>{ len(repterek)}<br>
                     <strong>A törölt járatok aránya:</strong><br>{arány*100:.2f}<br>
