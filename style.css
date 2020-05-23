@@ -108,3 +108,26 @@ a:active{
     #terkoz3 {
         margin: 20px 0px 20px 60px;
     }
+
+    .repter{
+        width: 200px;
+        height: 200px;
+        margin: 10px 10px 10px 10px;
+        font-size: small;
+        border-style: solid;
+        border-color: #000000;
+        float: left;
+    }
+    
+        #terkoz1 {
+            margin: 20px 60px 20px 20px;
+        }
+        
+        #terkoz2 {
+            margin: 20px 20px 20px 20px;
+        }
+        
+        #terkoz3 {
+            margin: 20px 0px 20px 60px;
+        }
+    
